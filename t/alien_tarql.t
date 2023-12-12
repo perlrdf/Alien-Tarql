@@ -6,7 +6,8 @@ use Alien::Tarql;
 alien_diag 'Alien::Tarql';
 alien_ok 'Alien::Tarql';
 
-run_ok([ 'tarql', '--version' ])
+my $tarql = $^O ne 'MSWin32' ? 'tarql' : 'tarql.bat';
+run_ok([ $tarql, '--version' ])
   ->success
   ->out_like(qr/tarql:\s+VERSION:\s+([0-9\.]+)/);
 
