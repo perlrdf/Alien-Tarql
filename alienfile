@@ -1,17 +1,20 @@
 use alienfile;
 
-# replace this with your own system probe.
-# See Alien::Build::Plugin::Probe and
-# Alien::Build::Plugin::PkgConfig for common
-# probe plugins.
-probe sub { 'share' };
+plugin 'Probe::CommandLine' => (
+  command => 'tarql',
+  args    => [ '--version' ],
+  match   => qr/tarql/,
+  version => qr/tarql:\s+VERSION:\s+([0-9\.]+)/,
+);
 
 share {
-  start_url 'https://github.com/tarql/tarql/releases/download/v1.2';
-  plugin Download => (
-    filter  => qr/^tarql.*tar\.gz$/,
-    version => qr/([0-9\.]+)/,
+  plugin 'Download::GitHub' => (
+    github_user => 'tarql',
+    github_repo => 'tarql',
+    asset        =>  1,
+    asset_name   => qr/^tarql-.*\.tar\.gz$/,
+    asset_format => 'tar.gz',
   );
   plugin Extract => 'tar.gz';
-  plugin 'Gather::IsolateDynamic';
+  plugin 'Build::Copy';
 }
